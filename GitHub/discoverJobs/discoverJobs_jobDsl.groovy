@@ -71,8 +71,10 @@ final class JobDslFactory {
 								gitHubPullRequestDiscovery {
 									strategyId(1) // Merge with target branch before building
 								}
-								gitHubSshCheckout {
-									credentialsId(sshCredentialsId)
+								if(sshCredentialsId != null) {
+									gitHubSshCheckout {
+										credentialsId(sshCredentialsId)
+									}
 								}
 								notificationContextTrait {
 									contextLabel("jenkins/${pipeline.name}")
@@ -285,8 +287,13 @@ final class JobDslFactory {
 					scm {
 						git {
 							remote {
-								url(repo.sshUrl)
-								credentials(sshCredentialsId)
+								if(sshCredentialsId!=null) {
+									url(repo.sshUrl)
+									credentials(sshCredentialsId)
+								} else {
+									url(repo.httpUrl)
+									credentials(httpCredentialsId)
+								}
 							}
 							branch(repo.defaultBranch)
 						}
@@ -453,7 +460,8 @@ new IndentPrinter(new PrintWriter(out)).with { p ->
 		p.flush()
 	}
 
-	JobDslFactory factory = new JobDslFactory(this, echo, httpCredentialsId, sshCredentialsId)
+	JobDslFactory factory = new JobDslFactory(this, echo, httpCredentialsId,
+		binding.hasVariable('sshCredentialsId') ? sshCredentialsId : null)
 
 	GitHub github = GitHub.connectUsingOAuth(apiToken)
 	GHPerson person

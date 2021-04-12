@@ -22,7 +22,11 @@ this script will then look for other "hook" Jenkinsfiles in the `jenkins/<name>`
 * `ghOwner` – The GitHub user or organisation whose repositories should be searched.
 * `httpCredentialsId` – The Jenkins credential ID for HTTP authentication to GitHub.
                         Must be "Username & Password" type, but the password can be a personal access token.
-* `sshCredentialsId` – The Jenkins credential ID to use for SSH authentication to GitHub.
-                       Must be "SSH private key" type.
 * `apiToken` – A GitHub API token to authenticate with when scanning repositories.
                This must be an actual value, not a credentials ID.
+
+## Optional Global Bindings
+
+* `sshCredentialsId` – The Jenkins credential ID to use for SSH authentication to GitHub.
+                       Must be "SSH private key" type. If provided, jobs will be configured to
+                       checkout via SSH rather than HTTP.
